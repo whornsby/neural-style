@@ -1,6 +1,3 @@
-from types import ClassMethodDescriptorType
-import drive
-
 # transfer job (class?)
 #   - data
 #     - inputs
@@ -22,38 +19,30 @@ import drive
 #   - drive file (id)
 #   - drive output folder
 
+# class ImageIndex:
+#   def __init__(self) -> None:
+#     pass
 
-class ImageInput:
-  # TODO: this
-  def __init__(self, id):
-      self.gid = id
-      self.image = None
-      self.name
+# def new_entry(file,path):
+#     id = file['id']
+#     filename = file['title']
+#     name = filename.split('.')[0]
+#     return (id, filename, name, path)
 
-class ImageIndex:
-  def __init__(self) -> None:
-    pass
-
-def new_entry(file,path):
-    id = file['id']
-    filename = file['title']
-    name = filename.split('.')[0]
-    return (id, filename, name, path)
-
-def build_index():
-  parents = ['root']
-  while parents:
-    pid = parents.pop()
-    listed = drive.ListFile({'q': f"'{pid}' in parents and trashed=false"}).GetList()
-    for file in listed:
-      if file['mimeType'] == 'application/vnd.google-apps.folder':
-          parents.append(file['id'])
-      else:
-        im_input = new_input_from_id(file['id'], file['title'])
+# def build_index():
+#   parents = ['root']
+#   while parents:
+#     pid = parents.pop()
+#     listed = drive.ListFile({'q': f"'{pid}' in parents and trashed=false"}).GetList()
+#     for file in listed:
+#       if file['mimeType'] == 'application/vnd.google-apps.folder':
+#           parents.append(file['id'])
+#       else:
+#         im_input = new_input_from_id(file['id'], file['title'])
 
 
-def new_input_from_id(id):
-  drive.CreateFile({'id': id})
+# def new_input_from_id(id):
+#   drive.CreateFile({'id': id})
 
 
 class TransferJob:
