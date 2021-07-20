@@ -52,7 +52,7 @@ class TransferJob:
     style_im = scipy.misc.imresize(style_im, target_shape[1] / style_im.shape[1])
 
     args['content'] = content_im
-    args['styles'] = style_im
+    args['styles'] = [style_im]
     args['initial'] = content_im
     
     self.args = args
