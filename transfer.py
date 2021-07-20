@@ -30,7 +30,8 @@ DEFAULTS = {
   "beta2": BETA2,
   "epsilon": EPSILON,
 
-  "pooling": POOLING
+  "pooling": POOLING,
+  "preserve_colors": False
 }
 
 SUPPORTED_FEATURES = "content, styles, width, iterations, preserve_colors, pooling, initial, overwrite, output" # width?
