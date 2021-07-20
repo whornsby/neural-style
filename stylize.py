@@ -9,6 +9,7 @@ import numpy as np
 import tensorflow as tf
 
 import vgg
+from util import *
 
 
 CONTENT_LAYERS = ('relu4_2', 'relu5_2')
@@ -29,11 +30,31 @@ def print_progress(loss_vals):
     for key,val in loss_vals.items():
         print('{:>13s} {:g}'.format(key + ' loss:', val))
 
+def stylize_job(content, styles, initial,
+        preserve_colors, iterations, pooling):
+    
+    return stylize(content, styles, initial,
+        preserve_colors=preserve_colors, 
+        iterations=iterations,
+        pooling=pooling)
 
-def stylize(network, initial, initial_noiseblend, content, styles, preserve_colors, iterations,
-        content_weight, content_weight_blend, style_weight, style_layer_weight_exp, style_blend_weights, tv_weight,
-        learning_rate, beta1, beta2, epsilon, pooling,
-        print_iterations=None, checkpoint_iterations=None):
+
+def stylize(content, styles, initial, 
+        iterations=ITERATIONS, 
+        preserve_colors=False, 
+        pooling=POOLING,
+        network=VGG_PATH, 
+        initial_noiseblend=INITIAL_NOISEBLEED, 
+        content_weight=CONTENT_WEIGHT,
+        content_weight_blend=CONTENT_WEIGHT_BLEND, 
+        style_weight=STYLE_WEIGHT,
+        style_layer_weight_exp=STYLE_LAYER_WEIGHT_EXP,
+        style_blend_weights=[STYLE_SCALE], 
+        tv_weight=TV_WEIGHT, 
+        learning_rate=LEARNING_RATE, 
+        beta1=BETA1, beta2=BETA2, epsilon=EPSILON,
+        print_iterations=None, 
+        checkpoint_iterations=None):
     """
     Stylize images.
 

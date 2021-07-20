@@ -11,23 +11,7 @@ import numpy as np
 import scipy.misc
 
 from stylize import stylize
-
-
-# default arguments
-CONTENT_WEIGHT = 5e0
-CONTENT_WEIGHT_BLEND = 1
-STYLE_WEIGHT = 5e2
-TV_WEIGHT = 1e2
-STYLE_LAYER_WEIGHT_EXP = 1
-LEARNING_RATE = 1e1
-BETA1 = 0.9
-BETA2 = 0.999
-EPSILON = 1e-08
-STYLE_SCALE = 1.0
-ITERATIONS = 1000
-VGG_PATH = 'imagenet-vgg-verydeep-19.mat'
-POOLING = 'max'
-
+from util import *
 
 def build_parser():
     parser = ArgumentParser()
@@ -127,15 +111,6 @@ def build_parser():
     parser.add_argument('--overwrite', action='store_true', dest='overwrite',
             help='write file even if there is already a file with that name')
     return parser
-
-
-def fmt_imsave(fmt, iteration):
-    if re.match(r'^.*\{.*\}.*$', fmt):
-        return fmt.format(iteration)
-    elif '%' in fmt:
-        return fmt % iteration
-    else:
-        raise ValueError("illegal format string '{}'".format(fmt))
 
 
 def main():
@@ -246,7 +221,28 @@ def main():
                 loss_arrs[key].append(val)
             itr.append(iteration)
 
-    return image, loss_arrs, itr
+    imsave(options.output, image)
+
+    if options.progress_write:
+        fn = "{}/progress.txt".format(os.path.dirname(options.output))
+        tmp = np.empty((len(itr), len(loss_arrs)+1), dtype=float)
+        tmp[:,0] = np.array(itr)
+        for ii,val in enumerate(loss_arrs.values()):
+            tmp[:,ii+1] = np.array(val)
+        np.savetxt(fn, tmp, header=' '.join(['itr'] + list(loss_arrs.keys())))
+
+
+    if options.progress_plot:
+        import matplotlib
+        matplotlib.use('Agg')
+        from matplotlib import pyplot as plt
+        fig,ax = plt.subplots()
+        for key, val in loss_arrs.items():
+            ax.semilogy(itr, val, label=key)
+        ax.legend()
+        ax.set_xlabel("iterations")
+        ax.set_ylabel("loss")
+        fig.savefig("{}/progress.png".format(os.path.dirname(options.output)))
 
 
 def imread(path):
