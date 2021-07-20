@@ -37,7 +37,7 @@ SUPPORTED_FEATURES = "content, styles, width, iterations, preserve_colors, pooli
 class TransferJob:
   def __init__(self, content_file, style_file, output_name, width=None) -> None:
     args = defaultdict(None)
-    for k,v in DEFAULTS:
+    for k,v in DEFAULTS.items():
       args[k] = v
     
     content_im = imread(content_file)
