@@ -101,13 +101,6 @@ class TransferJob:
     ):
       imsave(self.output, image)
 
-  def Cmd(self, output=None):
-    if output is None:
-      output = self.Output_name()
-    script = "python neural-style/neural_style.py"
-    cmd_arr = [script] + self.flags
-    return ' '.join(cmd_arr)
-
   def Output_name(self):
    outname = self.base_name + self.param_str + ".jpg"
    return outname
