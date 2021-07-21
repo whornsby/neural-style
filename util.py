@@ -27,6 +27,11 @@ def imgfig(img_file, title, size=10):
   plt.title(title)
   plt.imshow(img)
 
+def ishow(image, titls, size=10):
+  fig = plt.figure(figsize=(size, size))
+  plt.axis('off')
+  plt.title(title)
+  plt.imshow(image)
 
 '''Display a list of images vertically'''
 def imgshow(img_file, *img_files): 

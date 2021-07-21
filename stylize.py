@@ -30,14 +30,6 @@ def print_progress(loss_vals):
     for key,val in loss_vals.items():
         print('{:>13s} {:g}'.format(key + ' loss:', val))
 
-def stylize_job(content, styles, initial,
-        preserve_colors, iterations, pooling):
-    
-    return stylize(content, styles, initial,
-        preserve_colors=preserve_colors, 
-        iterations=iterations,
-        pooling=pooling)
-
 
 def stylize(content, styles, initial, 
         iterations=ITERATIONS, 
@@ -54,7 +46,8 @@ def stylize(content, styles, initial,
         learning_rate=LEARNING_RATE, 
         beta1=BETA1, beta2=BETA2, epsilon=EPSILON,
         print_iterations=None, 
-        checkpoint_iterations=None):
+        checkpoint_iterations=None,
+        verbose=False):
     """
     Stylize images.
 
@@ -73,6 +66,8 @@ def stylize(content, styles, initial,
     content_features = {}
     style_features = [{} for _ in styles]
 
+    if verbose:
+        print("loading network:",network)
     vgg_weights, vgg_mean_pixel = vgg.load_net(network)
 
     layer_weight = 1.0
@@ -89,6 +84,8 @@ def stylize(content, styles, initial,
         style_layers_weights[style_layer] /= layer_weights_sum
 
     # compute content features in feedforward mode
+    if verbose:
+        print("Computing content features")
     g = tf.Graph()
     with g.as_default(), g.device('/cpu:0'), tf.Session() as sess:
         image = tf.placeholder('float', shape=shape)
@@ -99,6 +96,8 @@ def stylize(content, styles, initial,
 
     # compute style features in feedforward mode
     for i in range(len(styles)):
+        if verbose:
+            print(f"Computing style features ({i+1})")
         g = tf.Graph()
         with g.as_default(), g.device('/cpu:0'), tf.Session() as sess:
             image = tf.placeholder('float', shape=style_shapes[i])
@@ -113,6 +112,8 @@ def stylize(content, styles, initial,
     initial_content_noise_coeff = 1.0 - initial_noiseblend
 
     # make stylized image using backpropogation
+    if verbose:
+        print("Generating stylized image...")
     with tf.Graph().as_default():
         if initial is None:
             noise = np.random.normal(size=shape, scale=np.std(content) * 0.1)
@@ -126,6 +127,8 @@ def stylize(content, styles, initial,
         net = vgg.net_preloaded(vgg_weights, image, pooling)
 
         # content loss
+        if verbose:
+            print("Calculating content loss")
         content_layers_weights = {}
         content_layers_weights['relu4_2'] = content_weight_blend
         content_layers_weights['relu5_2'] = 1.0 - content_weight_blend
@@ -139,6 +142,8 @@ def stylize(content, styles, initial,
         content_loss += reduce(tf.add, content_losses)
 
         # style loss
+        if verbose:
+            print("Calculating style loss")
         style_loss = 0
         for i in range(len(styles)):
             style_losses = []
@@ -153,6 +158,8 @@ def stylize(content, styles, initial,
             style_loss += style_weight * style_blend_weights[i] * reduce(tf.add, style_losses)
 
         # total variation denoising
+        if verbose:
+            print("Calculating total variation loss")
         tv_y_size = _tensor_size(image[:,1:,:,:])
         tv_x_size = _tensor_size(image[:,:,1:,:])
         tv_loss = tv_weight * 2 * (
@@ -183,6 +190,8 @@ def stylize(content, styles, initial,
                                   ('total', loss)])
 
         # optimizer setup
+        if verbose:
+            print("Optimizer setup")
         train_step = tf.train.AdamOptimizer(learning_rate, beta1, beta2, epsilon).minimize(loss)
 
         # optimization

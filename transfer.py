@@ -90,8 +90,9 @@ class TransferJob:
 # TODO: overwrite
 
   def Execute(self):
+    print("Executing style transfer job for", self.base_name)
     self.output = self.Output_name()
-    
+
     for iteration, image, loss_vals in stylize(
       content=self.args['content'],
       styles=self.args['styles'],
@@ -100,6 +101,9 @@ class TransferJob:
       preserve_colors=self.args['preserve_colors'],
       pooling=self.args['pooling']
     ):
+      if image is not None:
+        ishow(image, f"{self.output} - Iteration {iteration}", 5)
+    if image is not None:
       imsave(self.output, image)
 
   def Output_name(self):
