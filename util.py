@@ -1,6 +1,8 @@
 import re
-import numpy as np
 from PIL import Image
+from google.colab import files
+import numpy as np
+import matplotlib.pyplot as plt
 import scipy.misc
 
 # default argument
@@ -27,11 +29,13 @@ def imgfig(img_file, title, size=10):
   plt.title(title)
   plt.imshow(img)
 
-def ishow(image, titls, size=10):
+def ishow(image, title, size=10):
   fig = plt.figure(figsize=(size, size))
   plt.axis('off')
   plt.title(title)
   plt.imshow(image)
+
+
 
 '''Display a list of images vertically'''
 def imgshow(img_file, *img_files): 
@@ -96,3 +100,6 @@ def fmt_imsave(fmt, iteration):
         return fmt % iteration
     else:
         raise ValueError("illegal format string '{}'".format(fmt))
+
+def local_save(path):
+  files.download(path)

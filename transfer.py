@@ -31,7 +31,8 @@ DEFAULTS = {
   "epsilon": EPSILON,
 
   "pooling": POOLING,
-  "preserve_colors": False
+  "preserve_colors": False,
+  "verbose": False
 }
 
 SUPPORTED_FEATURES = "content, styles, width, iterations, preserve_colors, pooling, initial, overwrite, output" # width?
@@ -81,6 +82,9 @@ class TransferJob:
 
   def overwrite(self):
     self.args['overwrite'] = True
+
+  def verbose(self):
+    self.args['verbose'] = True
 
 # TODO: content weight
 # TODO: style weight
