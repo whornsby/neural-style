@@ -101,10 +101,3 @@ class Drive:
   #   upload_file = self.drive.CreateFile({'title': image_file,'parents': [{'id': pid} for pid in parents]})
   #   upload_file.SetContentFile(image_file)
   #   upload_file.Upload() 
-
-def display_image(image_name,size=10):
-  fig = plt.figure(figsize=(size, size))
-  plt.axis('off')
-  plt.title(image_name)
-  image_file = drive.Retrieve(image_name)
-  plt.imshow(image_file)
