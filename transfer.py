@@ -80,6 +80,25 @@ class TransferJob:
     self.args['pooling'] = val
     self.file_param("pool",val)
 
+  def content_weight(self, weight_scale):
+    weight = CONTENT_WEIGHT * weight_scale
+    self.args['content_weight'] = weight
+    self.file_param('contentWgt', weight_scale)
+
+  def style_weight(self, weight_scale):
+    weight = STYLE_WEIGHT * weight_scale
+    self.args['style_weight'] = weight
+    self.file_param('styleWgt', weight_scale)
+
+  def style_abstractness(self, style_layer_weight_xp):
+    self.args['style_layer_weight_xp'] = style_layer_weight_xp
+    self.file_param('styleAbs', style_layer_weight_xp)
+
+
+  def content_abstractness(self, content_weight_blend):
+    self.args['content_weight_blend'] = content_weight_blend
+    self.file_param('contentAbs', content_weight_blend)
+
   def overwrite(self):
     self.args['overwrite'] = True
 
@@ -105,8 +124,7 @@ class TransferJob:
       preserve_colors=self.args['preserve_colors'],
       pooling=self.args['pooling']
     ):
-      if image is not None:
-        ishow(image, f"{self.output} - Iteration {iteration}", 5)
+      pass
     if image is not None:
       imsave(self.output, image)
 
